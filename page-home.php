@@ -18,44 +18,20 @@
 				$categories = get_categories($args_cat);
 				$count = 0;
 				$bullets = '';
-				foreach($categories as $category):
-					
-					$args = array( 
-						'type' => 'post',
-						'posts_per_page' => 1,
-						'category__in' => $category->term_id,
-						'category__not_in' => array( 16 ),
-					);
-					
-					$lastBlog = new WP_Query( $args ); 
-					
-					if( $lastBlog->have_posts() ):
-						
-						while( $lastBlog->have_posts() ): $lastBlog->the_post(); ?>
-							
-							<div class="item <?php if($count == 0): echo 'active'; endif; ?>">
-						      <?php the_post_thumbnail('full'); ?>
-						      <div class="carousel-caption">
-							      <?php the_title( sprintf('<h1 class="entry-title"><a href="%s">', esc_url( get_permalink() ) ),'</a></h1>' ); ?>
-	
-								  <small><?php the_category(' '); ?></small>
-						      </div>
-						    </div>
-						    
-						    <?php $bullets .= '<li data-target="#awesome-carousel" data-slide-to="'.$count.'" class="'; ?>
-						    <?php if($count == 0): $bullets .='active'; endif; ?>
-						    
-						    <?php  $bullets .= '"></li>'; ?>
-						
-						<?php endwhile;
-						
-					endif;
-					
-					wp_reset_postdata();
 				
-				$count++;
-					
-				endforeach;
+				$lastBlog = new WP_Query('type=post&posts_per_page=-1&category_name=news');
+							
+						if( $lastBlog->have_posts() ):
+							
+							while( $lastBlog->have_posts() ): $lastBlog->the_post(); ?>
+								
+								<?php get_template_part('content',get_post_format()); ?>
+							
+							<?php endwhile;
+							
+						endif;
+						
+						wp_reset_postdata();
 			
 			?>
 			
